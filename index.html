@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Click The Button!">
+    <title>ClickFast - Multiplayer Clicker Game</title>
+    <style>
+        * {
+            color-scheme: dark;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        tbody tr:first-child {
+            color: yellow;
+            text-shadow: 0 0 .5em yellow;
+        }
+        
+        td {
+            padding: .2em;
+        }
+        
+        body {
+            height: 100vh;
+            display: grid;
+            place-items: center;
+        }
+        
+        img {
+            filter: invert(1);
+            width: 15em;
+            height: 15em;
+        }
+
+        button {
+            margin: 1em;
+            width: 20em;
+            height: 20em;
+            background-color: red;
+            border-radius: 50%;
+            border-width: .5em;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1><a href="https://github.com/SX-9/click-fast">ClickFast</a></h1>
+        <p>Score: <span id="score">0</span> | Username: <span id="name"></span></p>
+    </div>
+    <button id="add">
+        <img src="http://cdn.onlinewebfonts.com/svg/img_523458.png" alt="Upload Icon">
+    </button>
+    <div>
+        <h2>Leaderboard</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="players"></tbody>
+        </table>
+    </div>
+    <script type="module">
+        import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+        const socket = io();
+
+        socket.on('connect', () => document.querySelector('#name').innerText = socket.id);
+        add.onclick = () => {
+            score.innerText++;
+            socket.emit('add');
+        }
+
+        socket.on('users', (data) => {
+            players.innerHTML = '';
+            data.reverse().forEach((user, index) => {
+                let tr = document.createElement('tr');
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                
+                td1.innerText = index + 1;
+                td2.innerText = user.id;
+                td3.innerText = user.score;
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                players.appendChild(tr);
+            });
+        });
+    </script>
+</body>
+</html>
